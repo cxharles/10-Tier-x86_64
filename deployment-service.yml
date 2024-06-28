@@ -28,7 +28,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: adijaiswal/emailservice:latest
+        image: charlesjatto/emailservice:latest
         ports:
         - containerPort: 8080
         env:
@@ -81,7 +81,7 @@ spec:
       serviceAccountName: default
       containers:
         - name: server
-          image: adijaiswal/checkoutservice:latest
+          image: charlesjatto/checkoutservice:latest
           ports:
           - containerPort: 5050
           readinessProbe:
@@ -143,7 +143,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: adijaiswal/recommendationservice:latest
+        image: charlesjatto/recommendationservice:latest
         ports:
         - containerPort: 8080
         readinessProbe:
@@ -200,7 +200,7 @@ spec:
       serviceAccountName: default
       containers:
         - name: server
-          image: adijaiswal/frontend:latest
+          image: charlesjatto/frontend:latest
           ports:
           - containerPort: 8080
           readinessProbe:
@@ -259,7 +259,7 @@ kind: Service
 metadata:
   name: frontend
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: frontend
   ports:
@@ -267,18 +267,32 @@ spec:
     port: 80
     targetPort: 8080
 ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: frontend-external
+# spec:
+#   type: LoadBalancer
+#   selector:
+#     app: frontend
+#   ports:
+#   - name: http
+#     port: 80
+#     targetPort: 8080
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-external
+  name: frontend
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: frontend
   ports:
   - name: http
     port: 80
     targetPort: 8080
+    nodePort: 30100  # Specify a NodePort within the range 30000-32767
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -297,7 +311,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: adijaiswal/paymentservice:latest
+        image: charlesjatto/paymentservice:latest
         ports:
         - containerPort: 50051
         env:
@@ -349,7 +363,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: adijaiswal/productcatalogservice:latest
+        image: charlesjatto/productcatalogservice:latest
         ports:
         - containerPort: 3550
         env:
@@ -401,7 +415,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: adijaiswal/cartservice:latest
+        image: charlesjatto/cartservice:latest
         ports:
         - containerPort: 7070
         env:
@@ -465,7 +479,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: adijaiswal/loadgenerator:latest
+        image: charlesjatto/loadgenerator:latest
         env:
         - name: FRONTEND_ADDR
           value: "frontend:80"
@@ -496,7 +510,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: adijaiswal/currencyservice:latest
+        image: charlesjatto/currencyservice:latest
         ports:
         - name: grpc
           containerPort: 7000
@@ -548,7 +562,7 @@ spec:
       serviceAccountName: default
       containers:
       - name: server
-        image: adijaiswal/shippingservice:latest
+        image: charlesjatto/shippingservice:latest
         ports:
         - containerPort: 50051
         env:
@@ -654,7 +668,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: adijaiswal/adservice:latest
+        image: charlesjatto/adservice:latest
         ports:
         - containerPort: 9555
         env:
